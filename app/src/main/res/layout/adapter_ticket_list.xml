@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/department_status"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    android:background="@color/white">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/date_one_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:text="10"
+                    android:textColor="#000000"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/sourcesanspro_regular" />
+
+                <TextView
+                    android:id="@+id/month_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="Augest"
+                    android:textColor="#747474"
+                    android:textSize="12sp"
+                    android:textStyle="normal"
+                    android:fontFamily="@font/sourcesanspro_regular" />
+
+                <TextView
+                    android:id="@+id/year_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="5dp"
+                    android:text="2021"
+                    android:textColor="#A8A8A8"
+                    android:textSize="12sp"
+                    android:textStyle="normal"
+                    android:fontFamily="@font/sourcesanspro_regular" />
+
+            </LinearLayout>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_marginRight="5dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="3dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:weightSum="1.0">
+                        <LinearLayout
+                            android:layout_width="100dp"
+                            android:layout_height="match_parent"
+                            android:gravity="left|center"
+                            android:visibility="visible">
+
+                            <ImageView
+                                android:id="@+id/profile_image"
+                                android:layout_width="90dp"
+                                android:layout_height="90dp"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginTop="5dp"
+                                app:srcCompat="@drawable/piclist_icon_default" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="left|center"
+                            android:orientation="vertical"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="70dp"
+                                    android:layout_height="wrap_content"
+                                    android:ellipsize="end"
+                                    android:fontFamily="@font/sourcesanspro_regular"
+                                    android:maxLines="1"
+                                    android:text="Ticket No"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/sourcesanspro_regular"
+                                    android:text="@string/colon1"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"
+                                    android:textStyle="normal" />
+
+                                <TextView
+                                    android:id="@+id/text_ticketid"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="5dp"
+                                    android:layout_marginEnd="5dp"
+                                    android:ellipsize="end"
+                                    android:fontFamily="@font/sourcesanspro_regular"
+                                    android:maxLines="1"
+                                    android:text="Ticket id"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"
+                                    android:textStyle="normal" />
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="70dp"
+                                    android:layout_height="wrap_content"
+                                    android:ellipsize="end"
+                                    android:fontFamily="@font/sourcesanspro_regular"
+                                    android:maxLines="1"
+                                    android:text="Job Id"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/sourcesanspro_regular"
+                                    android:text="@string/colon1"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"
+                                    android:textStyle="normal" />
+
+                                <TextView
+                                    android:id="@+id/txt_job_id"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="5dp"
+                                    android:layout_marginEnd="5dp"
+                                    android:ellipsize="end"
+                                    android:fontFamily="@font/sourcesanspro_regular"
+                                    android:maxLines="1"
+                                    android:text="Job Id"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"
+                                    android:textStyle="normal" />
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="70dp"
+                                    android:layout_height="wrap_content"
+                                    android:ellipsize="end"
+                                    android:fontFamily="@font/sourcesanspro_regular"
+                                    android:maxLines="1"
+                                    android:text="Serving level"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/sourcesanspro_regular"
+                                    android:text="@string/colon1"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"
+                                    android:textStyle="normal" />
+
+                                <TextView
+                                    android:id="@+id/txt_serving_level"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="5dp"
+                                    android:layout_marginEnd="5dp"
+                                    android:ellipsize="end"
+                                    android:fontFamily="@font/sourcesanspro_regular"
+                                    android:maxLines="1"
+                                    android:text="Serving level"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"
+                                    android:textStyle="normal" />
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="70dp"
+                                    android:layout_height="wrap_content"
+                                    android:ellipsize="end"
+                                    android:fontFamily="@font/sourcesanspro_regular"
+                                    android:maxLines="1"
+                                    android:text="Station Name"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/sourcesanspro_regular"
+                                    android:text="@string/colon1"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"
+                                    android:textStyle="normal" />
+
+                                <TextView
+                                    android:id="@+id/name_text"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="5dp"
+                                    android:layout_marginEnd="5dp"
+                                    android:ellipsize="end"
+                                    android:fontFamily="@font/sourcesanspro_regular"
+                                    android:maxLines="1"
+                                    android:text="Station Name"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"
+                                    android:textStyle="normal" />
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:orientation="horizontal">
+                                <TextView
+                                    android:layout_width="70dp"
+                                    android:layout_height="wrap_content"
+                                    android:ellipsize="end"
+                                    android:fontFamily="@font/sourcesanspro_regular"
+                                    android:maxLines="1"
+                                    android:text="Fault Type"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/sourcesanspro_regular"
+                                    android:text="@string/colon1"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"
+                                    android:textStyle="normal" />
+                                <TextView
+                                    android:id="@+id/txt_fault_type"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="5dp"
+                                    android:layout_marginEnd="5dp"
+                                    android:ellipsize="end"
+                                    android:fontFamily="@font/sourcesanspro_regular"
+                                    android:maxLines="2"
+                                    android:text="Fault Type"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"
+                                    android:textStyle="normal" />
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:orientation="horizontal">
+                                <TextView
+                                    android:layout_width="70dp"
+                                    android:layout_height="wrap_content"
+                                    android:ellipsize="end"
+                                    android:fontFamily="@font/sourcesanspro_regular"
+                                    android:maxLines="1"
+                                    android:text="Descriptions"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/sourcesanspro_regular"
+                                    android:text="@string/colon1"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"
+                                    android:textStyle="normal" />
+                                <TextView
+                                    android:id="@+id/complaint_text"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="5dp"
+                                    android:layout_marginEnd="5dp"
+                                    android:ellipsize="end"
+                                    android:fontFamily="@font/sourcesanspro_regular"
+                                    android:maxLines="2"
+                                    android:text="Descriptions"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"
+                                    android:textStyle="normal" />
+                            </LinearLayout>
+
+
+
+
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="10dp"></LinearLayout>
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:weightSum="1.0">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.5"
+                            android:visibility="visible">
+
+                            <TextView
+                                android:id="@+id/txt_status"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
+                                android:layout_gravity="left|center"
+                                android:layout_marginLeft="20dp"
+                                android:text="status"
+                                android:textColor="#000000"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:fontFamily="@font/sourcesanspro_regular" />
+
+                            <TextView
+                                android:id="@+id/min_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
+                                android:layout_gravity="left|center"
+                                android:layout_marginLeft="10dp"
+                                android:text="am"
+                                android:textColor="@color/black"
+                                android:textSize="12dp"
+                                android:textStyle="bold"
+                                android:fontFamily="@font/sourcesanspro_regular"
+                                android:visibility="invisible"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/reschedule_layout"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginRight="15dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_weight="0.5"
+                            android:background="@color/colorAccent"
+                            android:gravity="center"
+                            android:weightSum="1.0">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
+                                android:text="UPDATE STATUS"
+                                android:textColor="@color/white"
+                                android:textSize="14dp"
+                                android:textStyle="bold"
+                                android:fontFamily="@font/sourcesanspro_regular" />
+
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="80dp"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/clock" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "394035768678",
+    "project_id": "johnson2021-f7937",
+    "storage_bucket": "johnson2021-f7937.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:394035768678:android:e73974da4151c4fb2f2ca7",
+        "android_client_info": {
+          "package_name": "com.triton.johnson"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "394035768678-t0krjgno1680j42cgiccibj8epjs6hb2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.triton.johnson",
+            "certificate_hash": "cc19f740ae75afc52818e2930398e24f52ccbcc1"
+          }
+        },
+        {
+          "client_id": "394035768678-qrn963ni32v7t51onp3935pf8sgcp3nf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZ-H1_EFxi97PDE7Bj6B9hmpms3hZ82y8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "394035768678-qrn963ni32v7t51onp3935pf8sgcp3nf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
