@@ -1,5 +1,7 @@
 package com.triton.johnson.requestpojo;
 
+import com.triton.johnson.responsepojo.GetPartListResponse;
+
 import java.util.List;
 
 public class UpdateIsuesStatusRequest {
@@ -18,11 +20,14 @@ public class UpdateIsuesStatusRequest {
     private String ticket_comments;
     private String user_id;
     private String date_of_create;
+    private String part_no_req;
     /**
      * image_path : /uploads/1628847534691.jpg
      */
 
     private List<TicketPhotoBean> ticket_photo;
+
+    private List<partDetails> part_det;
 
     public String getTicket_no() {
         return ticket_no;
@@ -72,6 +77,22 @@ public class UpdateIsuesStatusRequest {
         this.ticket_photo = ticket_photo;
     }
 
+    public List<partDetails> getPart_det() {
+        return part_det;
+    }
+
+    public void setPart_det(List<partDetails> part_det) {
+        this.part_det = part_det;
+    }
+
+    public String getPart_no_req() {
+        return part_no_req;
+    }
+
+    public void setPart_no_req(String part_no_req) {
+        this.part_no_req = part_no_req;
+    }
+
     public static class TicketPhotoBean {
         private String image_path;
 
@@ -81,6 +102,37 @@ public class UpdateIsuesStatusRequest {
 
         public void setImage_path(String image_path) {
             this.image_path = image_path;
+        }
+    }
+
+    public static class partDetails {
+
+        private String part_type;
+        private String part_no;
+        private String part_name;
+
+        public String getPart_type() {
+            return part_type;
+        }
+
+        public void setPart_type(String part_type) {
+            this.part_type = part_type;
+        }
+
+        public String getPart_no() {
+            return part_no;
+        }
+
+        public void setPart_no(String part_no) {
+            this.part_no = part_no;
+        }
+
+        public String getPart_name() {
+            return part_name;
+        }
+
+        public void setPart_name(String part_name) {
+            this.part_name = part_name;
         }
     }
 }

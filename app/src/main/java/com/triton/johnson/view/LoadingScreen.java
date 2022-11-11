@@ -10,8 +10,10 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.triton.johnson.R;
 import com.triton.johnson.session.SessionManager;
+
 import java.util.HashMap;
 
 /**

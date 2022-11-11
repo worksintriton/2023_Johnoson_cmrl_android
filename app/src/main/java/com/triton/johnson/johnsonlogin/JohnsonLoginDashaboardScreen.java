@@ -4,10 +4,12 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -118,6 +120,9 @@ public class JohnsonLoginDashaboardScreen extends Fragment implements SwipeRefre
     private int close_count;
 
 
+    JohnsonLoginDashaboardScreen mcontext;
+
+
     @SuppressLint("RestrictedApi")
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle arg) {
@@ -125,6 +130,7 @@ public class JohnsonLoginDashaboardScreen extends Fragment implements SwipeRefre
         Log.w(TAG,"onCreateView--->");
         final View view = inflater.inflate(R.layout.activity_johsnson_login_dashboard_screen, container,
                 false);
+        mcontext = this;
 
         txt_open_count = view.findViewById(R.id.open_count);
         txt_inprogress_count = view.findViewById(R.id.inprogress_count);
@@ -151,7 +157,7 @@ public class JohnsonLoginDashaboardScreen extends Fragment implements SwipeRefre
         ll_close = view.findViewById(R.id.ll_close);
 
 
-      
+
 
         //private LinearLayout changePasswordLayout;
         SessionManager sessionManager = new SessionManager(getActivity());
@@ -800,9 +806,19 @@ public class JohnsonLoginDashaboardScreen extends Fragment implements SwipeRefre
                                 openLayout.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
+                                        status = "Open";
                                         Intent intent = new Intent(getActivity(),JohnsonTicketCountsActivity.class);
-                                        intent.putExtra("ticketstatus","Open");
-                                        intent.putExtra("type",type);
+                                        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                                        editor.putString("type", String.valueOf(type));
+                                        editor.putString("ticketstatus",status);
+                                        Log.e("Nish",""+type);
+                                        Log.e("Nish 1",""+ status);
+                                        editor.apply();
+//                                        intent.putExtra("ticketstatus",status);
+//                                        intent.putExtra("type",type);
+//                                        Log.e("Nish 2",""+type);
+//                                        Log.e("Nish 2",""+ status);
                                         startActivity(intent);
                                     }
                                 });
@@ -816,9 +832,17 @@ public class JohnsonLoginDashaboardScreen extends Fragment implements SwipeRefre
                                 inprogressLayout.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
+                                        status = "Inprogress";
                                         Intent intent = new Intent(getActivity(),JohnsonTicketCountsActivity.class);
-                                        intent.putExtra("ticketstatus","Inprogress");
-                                        intent.putExtra("type",type);
+//                                        intent.putExtra("ticketstatus","Inprogress");
+//                                        intent.putExtra("type",type);
+                                        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                                        editor.putString("type", String.valueOf(type));
+                                        editor.putString("ticketstatus",status);
+                                        Log.e("Nish",""+type);
+                                        Log.e("Nish 1",""+ status);
+                                        editor.apply();
                                         startActivity(intent);
                                     }
                                 });
@@ -831,8 +855,14 @@ public class JohnsonLoginDashaboardScreen extends Fragment implements SwipeRefre
                                     @Override
                                     public void onClick(View view) {
                                         Intent intent = new Intent(getActivity(),JohnsonTicketCountsActivity.class);
-                                        intent.putExtra("ticketstatus","Pending");
-                                        intent.putExtra("type",type);
+//                                        intent.putExtra("ticketstatus","Pending");
+//                                        intent.putExtra("type",type);
+                                        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                                        editor.putString("type", String.valueOf(type));
+                                        editor.putString("ticketstatus","Pending");
+                                        Log.e("Nish 2",""+type);
+                                        editor.apply();
                                         startActivity(intent);
                                     }
                                 });
@@ -847,8 +877,14 @@ public class JohnsonLoginDashaboardScreen extends Fragment implements SwipeRefre
                                     @Override
                                     public void onClick(View view) {
                                         Intent intent = new Intent(getActivity(),JohnsonTicketCountsActivity.class);
-                                        intent.putExtra("ticketstatus","Completed");
-                                        intent.putExtra("type",type);
+//                                        intent.putExtra("ticketstatus","Completed");
+//                                        intent.putExtra("type",type);
+                                        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                                        editor.putString("type", String.valueOf(type));
+                                        editor.putString("ticketstatus","Completed");
+                                        Log.e("Nish 2",""+type);
+                                        editor.apply();
                                         startActivity(intent);
                                     }
                                 });
@@ -862,9 +898,16 @@ public class JohnsonLoginDashaboardScreen extends Fragment implements SwipeRefre
                                 closeLayout.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
+
                                         Intent intent = new Intent(getActivity(), JohnsonTicketCountsActivity.class);
-                                        intent.putExtra("ticketstatus", "Close");
-                                        intent.putExtra("type",type);
+//                                        intent.putExtra("ticketstatus", "Close");
+//                                        intent.putExtra("type",type);
+                                        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                                        editor.putString("type", String.valueOf(type));
+                                        editor.putString("ticketstatus","Close");
+                                        Log.e("Nish 2",""+type);
+                                        editor.apply();
                                         startActivity(intent);
                                     }
                                 });

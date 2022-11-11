@@ -2,6 +2,8 @@ package com.triton.johnson.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +42,8 @@ public class JohnsonTicketsListAdapter extends RecyclerView.Adapter<JohnsonTicke
     //    private final LocalDateTime now = LocalDateTime.now().withTime(0, 0, 0, 0);
     private String updateAt;
     private String outTime;
+
+    String jobid;
     List<JohnsonTicketListResponse.DataBean> ticketList;
 
 
@@ -137,7 +141,9 @@ public class JohnsonTicketsListAdapter extends RecyclerView.Adapter<JohnsonTicke
             holder.textTicketID.setText(dataBean.getTicket_no());
         }
         if(dataBean.getJob_detail().getJob_no() != null) {
-          holder.txt_job_id.setText(dataBean.getJob_detail().getJob_no());
+            jobid = dataBean.getJob_detail().getJob_no();
+            Log.e("JobID",""+jobid);
+          holder.txt_job_id.setText(jobid);
         }if(dataBean.getJob_detail().getServing_level() != null) {
           holder.txt_serving_level.setText(dataBean.getJob_detail().getServing_level());
         }
@@ -225,9 +231,17 @@ public class JohnsonTicketsListAdapter extends RecyclerView.Adapter<JohnsonTicke
             context.overridePendingTransition(R.anim.new_right, R.anim.new_left);
         });
         holder.rscheduleLinearLayout.setOnClickListener(view -> {
+
             Intent intent = new Intent(context, UpdateStatusActivity.class);
-            intent.putExtra("ticketId", dataBean.getTicket_no());
-            intent.putExtra("ticketStatus", dataBean.getStatus());
+//            intent.putExtra("ticketId", dataBean.getTicket_no());
+//            intent.putExtra("ticketStatus", dataBean.getStatus());
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("jobid", jobid);
+            editor.putString("ticketId", dataBean.getTicket_no());
+            editor.putString("ticketStatus",dataBean.getStatus());
+            Log.e("Nish",""+jobid);
+            editor.apply();
            /* intent.putExtra("departmentCode", movie.getName());
             intent.putExtra("stationLocation", movie.getStationType());
             intent.putExtra("ticketStatus", movie.getName());

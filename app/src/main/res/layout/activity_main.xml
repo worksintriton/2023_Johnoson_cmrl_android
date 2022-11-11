@@ -151,8 +151,22 @@
                     </LinearLayout>
 
                 </LinearLayout>
+
             </RelativeLayout>
         </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/sourcesanspro_regular"
+            android:padding="15dp"
+            android:layout_alignParentBottom="true"
+            android:text="Test Version - 11/11/2022-06.30"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
     </RelativeLayout>
 

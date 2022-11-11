@@ -8,6 +8,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -19,6 +20,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.provider.Settings;
@@ -36,6 +38,7 @@ import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,6 +49,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -59,11 +65,19 @@ import com.triton.johnson.api.APIInterface;
 import com.triton.johnson.api.ApiCall;
 import com.triton.johnson.api.RetrofitClient;
 import com.triton.johnson.arraylist.IssueList;
+import com.triton.johnson.db.CommonUtil;
+import com.triton.johnson.db.DbHelper;
+import com.triton.johnson.db.DbUtil;
+import com.triton.johnson.johnsonlogin.JohnsonTicketCountsActivity;
+import com.triton.johnson.johnsonlogin.PartReplacement_Activity;
+import com.triton.johnson.johnsonlogin.PartReplacement_Adapter;
 import com.triton.johnson.materialspinner.MaterialSpinner;
 import com.triton.johnson.model.ImageUploadResponse;
 import com.triton.johnson.photoview.PhotoView;
+import com.triton.johnson.requestpojo.GetPartListRequest;
 import com.triton.johnson.requestpojo.TicketCreateRequest;
 import com.triton.johnson.requestpojo.UpdateIsuesStatusRequest;
+import com.triton.johnson.responsepojo.GetPartListResponse;
 import com.triton.johnson.responsepojo.StationNameResponse;
 import com.triton.johnson.responsepojo.SuccessResponse;
 import com.triton.johnson.session.SessionManager;
@@ -94,6 +108,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import es.dmoral.toasty.Toasty;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -104,6 +119,8 @@ import retrofit2.Response;
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.content.ContentValues.TAG;
+import static android.view.View.GONE;
 
 /**
  * Created by Iddinesh.
@@ -160,7 +177,6 @@ public class UpdateStatusActivity extends AppCompatActivity {
     private static final String READ_EXTERNAL_STORAGE_PERMISSION = READ_EXTERNAL_STORAGE;
     private static final String WRITE_EXTERNAL_STORAGE_PERMISSION = WRITE_EXTERNAL_STORAGE;
 
-
     private static final int REQUEST_READ_FAULT_PIC_PERMISSION = 786;
     private static final int REQUEST_FAULT_CAMERA_PERMISSION_CODE = 785 ;
 
@@ -172,14 +188,33 @@ public class UpdateStatusActivity extends AppCompatActivity {
     private RadioGroup radioGroup;
     RadioButton radioButton;
     int selectedId;
-    String TextMaterial;
+    String TextMaterial,type;
+    Button btn_Add;
+    Context context;
+    String jobid,str_Partname,str_Partno,str_Parttype;
+    ArrayList<String> arli_Partname,arli_Partno,arli_Parttype;
+    TextView txt_Partname;
+    RelativeLayout rel_One,rel_Two;
 
+    //////////
 
-    @SuppressLint("ClickableViewAccessibility")
+    RecyclerView recyclerView;
+    Button btn_Ok;
+    String Status_Name;
+    TextView txt_NoRecords;
+    List<GetPartListResponse.Datum> databeanlist;
+    PartReplacement_Adapter partReplacement_Adapter;
+
+    @SuppressLint({"ClickableViewAccessibility", "MissingInflatedId"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.update_issuse);
+        context = this;
+
+        CommonUtil.dbUtil = new DbUtil(context);
+        CommonUtil.dbUtil.open();
+        CommonUtil.dbHelper = new DbHelper(context);
 
         sessionManager = new SessionManager(UpdateStatusActivity.this);
         HashMap<String, String> hashMap = sessionManager.getUserDetails();
@@ -189,14 +224,16 @@ public class UpdateStatusActivity extends AppCompatActivity {
         station_code = hashMap.get(SessionManager.KEY_STATION_CODE);
         Log.w(TAG+"  "+"onCreate-->","empid :"+empid+"userLevel :"+userLevel+"station_code :"+station_code);
 
-        ticketStatus = Objects.requireNonNull(getIntent().getExtras()).getString("ticketStatus");
-        ticketId = getIntent().getExtras().getString("ticketId");
+//        ticketStatus = Objects.requireNonNull(getIntent().getExtras()).getString("ticketStatus");
+//        ticketId = getIntent().getExtras().getString("ticketId");
+//
+//        Log.e(TAG,"ticketStatus : "+ticketStatus+" ticketId : "+ticketId);
 
-        Log.w(TAG,"ticketStatus : "+ticketStatus+" ticketId : "+ticketId);
 
-
-        locNmae = getIntent().getExtras().getString("stationLocation");
-        issues = getIntent().getExtras().getString("issues");
+//        locNmae = getIntent().getExtras().getString("stationLocation");
+//        issues = getIntent().getExtras().getString("issues");
+//
+//        Log.e(TAG,"ticketStatus : "+locNmae+" ticketId : "+issues);
 
         boldTypeface = Typeface
                 .createFromAsset(UpdateStatusActivity.this.getAssets(), "fonts/bolod_gothici.TTF");
@@ -213,12 +250,40 @@ public class UpdateStatusActivity extends AppCompatActivity {
 
         ll_Radio = findViewById(R.id.ll_radiobtn);
         radioGroup = (RadioGroup)findViewById(R.id.groupradio);
+        btn_Add = findViewById(R.id.btn_add);
 
         submitButton = findViewById(R.id.add_button);
 
         injuryGridView = findViewById(R.id.add_image_grid_view);
 
+        txt_Partname =findViewById(R.id.txt_partname);
+///////////////
+        rel_One = findViewById(R.id.rel_one);
+        rel_Two = findViewById(R.id.rel_two);
+        recyclerView = findViewById(R.id.recycler_view);
+        btn_Ok = findViewById(R.id.btn_ok);
+        txt_NoRecords = findViewById(R.id.txt_no_records);
+
         issuseEditText.setTypeface(normalTypeface);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        type =sharedPreferences.getString("type", "1");
+        Log.e("Nish ",""+type);
+        Log.e("Nish ",""+ String.valueOf(type));
+        jobid = sharedPreferences.getString("jobid", "default value");
+        Log.e("JobID",""+jobid);
+        ticketStatus = sharedPreferences.getString("ticketStatus","abcd");
+        ticketId = sharedPreferences.getString("ticketId","1234");
+        Log.e("ticketStatus",""+ticketStatus);
+        Log.e("ticketId",""+ticketId);
+
+        Bundle extras = getIntent().getExtras();
+
+        if (extras != null) {
+            StatusName = extras.getString("status");
+            Log.e("Nish2",""+StatusName);
+        }
+
 
         items = new CharSequence[]{"Take Photo", "Choose from Gallery", "Cancel"};
 
@@ -238,6 +303,7 @@ public class UpdateStatusActivity extends AppCompatActivity {
         }
         spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item); // The drop down view
         spinner_status.setAdapter(spinnerArrayAdapter);
+
         spinner_status.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int arg2, long arg3) {
@@ -248,6 +314,12 @@ public class UpdateStatusActivity extends AppCompatActivity {
                 if (StatusName.equals("Completed")){
 
                     ll_Radio.setVisibility(View.VISIBLE);
+                }
+                else{
+
+                    ll_Radio.setVisibility(GONE);
+                    btn_Add.setVisibility(GONE);
+                    txt_Partname.setVisibility(GONE);
                 }
 
 
@@ -270,15 +342,52 @@ public class UpdateStatusActivity extends AppCompatActivity {
                 TextMaterial = radioButton.getText().toString();
                 Log.e("Data",""+TextMaterial);
 
+//                Toast.makeText(UpdateStatusActivity.this,
+//                                TextMaterial,
+//                                Toast.LENGTH_SHORT)
+//                        .show();
 
-                Toast.makeText(UpdateStatusActivity.this,
-                                TextMaterial,
-                                Toast.LENGTH_SHORT)
-                        .show();
+                if (TextMaterial.equals("Yes")){
+
+                    btn_Add.setVisibility(View.VISIBLE);
+                    txt_Partname.setVisibility(View.VISIBLE);
+
+                    btn_Add.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            rel_One.setVisibility(GONE);
+                            rel_Two.setVisibility(View.VISIBLE);
+
+                            getPartListCall();
+
+
+//                            Intent intent = new Intent(context, PartReplacement_Activity.class);
+//                            intent.putExtra("status",StatusName);
+//                            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+//                            SharedPreferences.Editor editor = sharedPreferences.edit();
+//                            editor.putString("status", StatusName);
+//                            Log.e("Nish",""+StatusName);
+//                            context.startActivity(intent);
+                        }
+                    });
+                }else{
+                    btn_Add.setVisibility(GONE);
+                }
 
               //  selectedId = radioGroup.getCheckedRadioButtonId();
 
 //                Log.e("Data",""+radioGroup.getCheckedRadioButtonId());
+            }
+        });
+
+
+        btn_Ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rel_Two.setVisibility(GONE);
+                rel_One.setVisibility(View.VISIBLE);
+                getPartdata();
             }
         });
 
@@ -430,6 +539,120 @@ public class UpdateStatusActivity extends AppCompatActivity {
 
             }
         });
+    }
+    private void getPartListCall() {
+
+        APIInterface apiInterface = RetrofitClient.getClient().create(APIInterface.class);
+        Call<GetPartListResponse> call = apiInterface.PartListCall(RestUtils.getContentType(), partlistRequest());
+        Log.w(TAG, "Get Part List url  :%s" + " " + call.request().url().toString());
+
+        call.enqueue(new Callback<GetPartListResponse>() {
+            @Override
+            public void onResponse(Call<GetPartListResponse> call, Response<GetPartListResponse> response) {
+                Log.e(TAG, "Get Part List Response" + new Gson().toJson(response.body()));
+
+                if (response.body() != null){
+
+                    if (response.body().getCode() == 200){
+
+
+                        if (response.body().getData() != null) {
+                            databeanlist = response.body().getData();
+
+                            if (databeanlist.size() == 0){
+
+                                recyclerView.setVisibility(GONE);
+                                txt_NoRecords.setVisibility(View.VISIBLE);
+                                txt_NoRecords.setText("No Records Found");
+
+                            }
+
+                            setView(databeanlist);
+                            Log.d("dataaaaa", String.valueOf(databeanlist));
+
+                        } else if (400 == response.body().getCode()) {
+                            if (response.body().getMessage() != null && response.body().getMessage().equalsIgnoreCase("There is already a user registered with this email id. Please add new email id")) {
+                                recyclerView.setVisibility(GONE);
+                                txt_NoRecords.setVisibility(View.VISIBLE);
+                                txt_NoRecords.setText("Error 404 Found..!");
+                            }
+                        }else {
+                            recyclerView.setVisibility(GONE);
+                            txt_NoRecords.setVisibility(View.VISIBLE);
+                            txt_NoRecords.setText("Error 404 Found..!");
+                            Toasty.warning(getApplicationContext(), "" + response.body().getMessage(), Toasty.LENGTH_LONG).show();
+                        }
+                    }
+
+
+                }
+                else{
+
+                    recyclerView.setVisibility(GONE);
+                    txt_NoRecords.setVisibility(View.VISIBLE);
+                    txt_NoRecords.setText("Something went wrong..! Try agin");
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<GetPartListResponse> call, Throwable t) {
+                Log.e("Jobno Find ", "--->" + t.getMessage());
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                recyclerView.setVisibility(GONE);
+                txt_NoRecords.setVisibility(View.VISIBLE);
+                txt_NoRecords.setText("Something went wrong..! Try agin");
+            }
+        });
+
+    }
+
+    private void setView(List<GetPartListResponse.Datum> databeanlist) {
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        partReplacement_Adapter = new PartReplacement_Adapter(this, databeanlist);
+        recyclerView.setAdapter(partReplacement_Adapter);
+    }
+
+    private GetPartListRequest partlistRequest() {
+
+        GetPartListRequest partRequest = new GetPartListRequest();
+        partRequest.setPart_type(type);
+        Log.w(TAG, "Jobno Find Request " + new Gson().toJson(partRequest));
+        return partRequest;
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void getPartdata() {
+
+        arli_Partname = new ArrayList<>();
+        arli_Partno = new ArrayList<>();
+        arli_Parttype = new ArrayList<>();
+
+        Cursor cur = CommonUtil.dbUtil.getPart(jobid);
+        Log.e("COunt",""+cur.getCount());
+
+        if (cur.getCount()>0 && cur.moveToFirst()) {
+
+            txt_Partname.setVisibility(View.VISIBLE);
+
+            txt_Partname.setText(cur.getCount()+"item(s) Selected for Part Replacement");
+
+            do{
+                str_Partname = cur.getString(cur.getColumnIndex(DbHelper.PART_NAME));
+                str_Partno = cur.getString(cur.getColumnIndex(DbHelper.PART_NO));
+                str_Parttype = cur.getString(cur.getColumnIndex(DbHelper.PART_TYPE));
+                arli_Partname.add(str_Partname);
+                arli_Partno.add(str_Partno);
+                arli_Parttype.add(str_Parttype);
+
+                Log.e("Partname",""+ arli_Partname);
+                Log.e("Partno",""+ arli_Partno);
+                Log.e("PartType",""+ arli_Parttype);
+            }while (cur.moveToNext());
+
+        }
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -860,7 +1083,11 @@ public class UpdateStatusActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+
         super.onBackPressed();
+
+//        Intent intent = new Intent(context, JohnsonTicketCountsActivity.class);
+//        context.startActivity(intent);
     }
 
     public void uploadFile(final String path) {
@@ -956,7 +1183,6 @@ public class UpdateStatusActivity extends AppCompatActivity {
                     }
                 }
 
-
             }
 
             @SuppressLint("LongLogTag")
@@ -980,7 +1206,6 @@ public class UpdateStatusActivity extends AppCompatActivity {
          * date_of_create :
          */
 
-
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm aa", Locale.getDefault());
         String currentDateandTime = sdf.format(new Date());
 
@@ -991,6 +1216,31 @@ public class UpdateStatusActivity extends AppCompatActivity {
         updateIsuesStatusRequest.setTicket_comments(issuseEditText.getText().toString());
         updateIsuesStatusRequest.setTicket_photo(image_list);
         updateIsuesStatusRequest.setUser_id(empid);
+        updateIsuesStatusRequest.setPart_no_req(TextMaterial);
+
+        if (ticketStatus.equals("Inprogress") && StatusName.equals("Completed")){
+
+            List<UpdateIsuesStatusRequest.partDetails> part_details = new ArrayList<>();
+
+            for(int j =0; j <arli_Partname.size(); j++){
+
+                UpdateIsuesStatusRequest.partDetails myfield = new UpdateIsuesStatusRequest.partDetails();
+
+                myfield.setPart_name(arli_Partname.get(j));
+                myfield.setPart_no(arli_Partno.get(j));
+                myfield.setPart_type(arli_Parttype.get(j));
+
+                part_details.add(myfield);
+
+            }
+
+            Log.e("Nish",""+ part_details.size());
+            Log.e(TAG," Update Issue"+ new Gson().toJson(part_details));
+
+            updateIsuesStatusRequest.setPart_det(part_details);
+        }
+
+
         Log.w(TAG,"updateIsuesStatusRequest "+ new Gson().toJson(updateIsuesStatusRequest));
         return updateIsuesStatusRequest;
     }
@@ -1226,4 +1476,5 @@ public class UpdateStatusActivity extends AppCompatActivity {
         });
 
     }
+
 }

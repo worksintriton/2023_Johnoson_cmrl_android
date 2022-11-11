@@ -7,6 +7,7 @@ import com.triton.johnson.requestpojo.CheckAttendanceRequest;
 import com.triton.johnson.requestpojo.CmrlDashboardCountRequest;
 import com.triton.johnson.requestpojo.FBTokenUpdateRequest;
 import com.triton.johnson.requestpojo.FaultTypeListRequest;
+import com.triton.johnson.requestpojo.GetPartListRequest;
 import com.triton.johnson.requestpojo.JobNoListRequest;
 import com.triton.johnson.requestpojo.JohnsonTicketListRequest;
 import com.triton.johnson.requestpojo.LoginRequest;
@@ -21,6 +22,7 @@ import com.triton.johnson.responsepojo.CheckAttendanceResponse;
 import com.triton.johnson.responsepojo.CmrlDashboardCountResponse;
 import com.triton.johnson.responsepojo.FBTokenUpdateResponse;
 import com.triton.johnson.responsepojo.FaultTypeListResponse;
+import com.triton.johnson.responsepojo.GetPartListResponse;
 import com.triton.johnson.responsepojo.JobNoListResponse;
 import com.triton.johnson.responsepojo.JobNumberResponse;
 import com.triton.johnson.responsepojo.JohnsonTicketListResponse;
@@ -136,4 +138,8 @@ public interface APIInterface {
     Call<SuccessResponse> logoutResponseCall(@Header("Content-Type") String type, @Body LogoutRequest logoutRequest);
 
 
+    //get Part List
+
+    @POST("part_no/getlist_by_parttype")
+    Call<GetPartListResponse> PartListCall(@Header("Content-Type") String type, @Body GetPartListRequest getPartListRequest);
 }

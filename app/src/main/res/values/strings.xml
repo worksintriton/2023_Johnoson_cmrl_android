@@ -10,8 +10,7 @@
     <string name="err_msg_type_of_stationname">Select the station name</string>
     <string name="err_msg_type_of_jobno">Select the job no</string>
     <string name="err_msg_type_of_faulttype">Select the fault type</string>
-
-
+    <string name="no_service_list">No Services List</string>
     <string name="font_name_fontawesome">fontawesome</string>
     <string name="font_name_source_sans_pro">SourceSansPro</string>
 

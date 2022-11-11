@@ -10,11 +10,12 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -82,7 +83,7 @@ public class JohnsonTicketCountsActivity extends AppCompatActivity  implements S
     private LinearLayoutManager mLayoutManager;
 
     private String TAG = "JohnsonTicketCountsActivity";
-    private String ticketstatus;
+    private String str_Ticketstatus;
 
     private  int type = 1;
     private List<StationNameResponse.DataBean> stationNameList = new ArrayList<>();
@@ -103,11 +104,17 @@ public class JohnsonTicketCountsActivity extends AppCompatActivity  implements S
     private List<JobNumberResponse.DataBean> elivatorJobNoList = new ArrayList<>();
     private boolean isClearClick;
 
+    String str_type ="1";
+
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Log.e("Hi","Ticket COunt");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_johnson_ticket_counts);
+        context = this;
 
         //private LinearLayout changePasswordLayout;
         SessionManager sessionManager = new SessionManager(getApplicationContext());
@@ -116,11 +123,16 @@ public class JohnsonTicketCountsActivity extends AppCompatActivity  implements S
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            ticketstatus = bundle.getString("ticketstatus");
-            type = bundle.getInt("type");
-            Log.w(TAG,"ticketstatus : "+ticketstatus+" type : "+type);
+//            str_Ticketstatus = bundle.getString("ticketstatus");
+//            type = bundle.getInt("type");
+//            Log.w(TAG,"ticketstatus : "+str_Ticketstatus+" type : "+type);
         }
 
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        str_type =sharedPreferences.getString("type", "defaultvalue");
+        str_Ticketstatus = sharedPreferences.getString("ticketstatus","in");
+        Log.e("Nish ",""+str_type);
+        Log.e("Status ",""+ str_Ticketstatus);
 
         recyclerView = findViewById(R.id.recycler_view);
         emptyCustomFontTextView =  findViewById(R.id.empty_text);
@@ -439,6 +451,11 @@ public class JohnsonTicketCountsActivity extends AppCompatActivity  implements S
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+//        Intent intent = new Intent(context, JohnsonLoginDashaboardScreen.class);
+//        startActivity(intent);
+
+//        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+//        fragmentTransaction.replace(R.id.coordinatorLayout,new JohnsonLoginDashaboardScreen()).commit();
 
     }
     private void showExitAppAlert() {
@@ -540,7 +557,7 @@ public class JohnsonTicketCountsActivity extends AppCompatActivity  implements S
         dialog.show();*/
 
         APIInterface apiInterface = RetrofitClient.getClient().create(APIInterface.class);
-        Call<StationNameResponse> call = apiInterface.StationNameResponseCall(RestUtils.getContentType(), stationNameRequest(type));
+        Call<StationNameResponse> call = apiInterface.StationNameResponseCall(RestUtils.getContentType(), stationNameRequest());
         Log.w(TAG,"StationNameResponseCall url  :%s"+" "+ call.request().url().toString());
 
         call.enqueue(new retrofit2.Callback<StationNameResponse>() {
@@ -604,13 +621,13 @@ public class JohnsonTicketCountsActivity extends AppCompatActivity  implements S
 
         }
     }
-    private StationNameRequest stationNameRequest(int type) {
+    private StationNameRequest stationNameRequest() {
         /*
          * type : 1
          */
 
         StationNameRequest stationNameRequest = new StationNameRequest();
-        stationNameRequest.setType(type);
+        stationNameRequest.setType(Integer.parseInt(str_type));
         Log.w(TAG,"stationNameRequest "+ new Gson().toJson(stationNameRequest));
         return stationNameRequest;
     }
@@ -697,7 +714,7 @@ public class JohnsonTicketCountsActivity extends AppCompatActivity  implements S
         johnsonTicketListRequest.setType(String.valueOf(type));
         johnsonTicketListRequest.setStation_id(StationName_id);
         johnsonTicketListRequest.setJob_id(JobName_id);
-        johnsonTicketListRequest.setStatus(ticketstatus);
+        johnsonTicketListRequest.setStatus(str_Ticketstatus);
         Log.w(TAG,"johnsonTicketListRequest "+ new Gson().toJson(johnsonTicketListRequest));
         return johnsonTicketListRequest;
     }
