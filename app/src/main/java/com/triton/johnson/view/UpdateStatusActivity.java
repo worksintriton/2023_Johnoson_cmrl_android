@@ -25,6 +25,8 @@ import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.provider.Settings;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +37,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -188,14 +191,15 @@ public class UpdateStatusActivity extends AppCompatActivity {
     private RadioGroup radioGroup;
     RadioButton radioButton;
     int selectedId;
-    String TextMaterial,type;
+    String TextMaterial ="",type;
     Button btn_Add;
     Context context;
     String jobid,str_Partname,str_Partno,str_Parttype;
     ArrayList<String> arli_Partname,arli_Partno,arli_Parttype;
     TextView txt_Partname;
     RelativeLayout rel_One,rel_Two;
-
+    EditText edt_Search;
+    ImageView  imgClearsearch;
     //////////
 
     RecyclerView recyclerView;
@@ -204,6 +208,7 @@ public class UpdateStatusActivity extends AppCompatActivity {
     TextView txt_NoRecords;
     List<GetPartListResponse.Datum> databeanlist;
     PartReplacement_Adapter partReplacement_Adapter;
+    ProgressDialog progressDialog;
 
     @SuppressLint({"ClickableViewAccessibility", "MissingInflatedId"})
     @Override
@@ -235,6 +240,15 @@ public class UpdateStatusActivity extends AppCompatActivity {
 //
 //        Log.e(TAG,"ticketStatus : "+locNmae+" ticketId : "+issues);
 
+        CommonUtil.dbUtil.reportdelete(jobid);
+        Cursor cur = CommonUtil.dbUtil.getPart(jobid);
+        Log.e("COunt",""+cur.getCount());
+
+//        CommonUtil.dbUtil.deleteparttable();
+//        Cursor cur = CommonUtil.dbUtil.getPartall();
+//        Log.e("Full Deletion",""+cur.getCount());
+
+
         boldTypeface = Typeface
                 .createFromAsset(UpdateStatusActivity.this.getAssets(), "fonts/bolod_gothici.TTF");
         normalTypeface = Typeface
@@ -263,6 +277,8 @@ public class UpdateStatusActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recycler_view);
         btn_Ok = findViewById(R.id.btn_ok);
         txt_NoRecords = findViewById(R.id.txt_no_records);
+        edt_Search = findViewById(R.id.edt_search);
+        imgClearsearch = findViewById(R.id.img_clearsearch);
 
         issuseEditText.setTypeface(normalTypeface);
 
@@ -311,12 +327,19 @@ public class UpdateStatusActivity extends AppCompatActivity {
                 StatusName = spinner_status.getSelectedItem().toString();
                 Log.e("Status Type",""+StatusName);
 
-                if (StatusName.equals("Completed")){
+//                radioGroup.clearCheck();
 
+                if (StatusName.equals("Completed")){
                     ll_Radio.setVisibility(View.VISIBLE);
+//                    radioGroup.clearCheck();
+//                    radioButton.setId(0);
                 }
                 else{
 
+                    CommonUtil.dbUtil.reportdelete(jobid);
+                    Cursor cur = CommonUtil.dbUtil.getPart(jobid);
+                    Log.e("After Pending",""+cur.getCount());
+                    txt_Partname.setText("Please Add Part Replacement Items");
                     ll_Radio.setVisibility(GONE);
                     btn_Add.setVisibility(GONE);
                     txt_Partname.setVisibility(GONE);
@@ -334,6 +357,7 @@ public class UpdateStatusActivity extends AppCompatActivity {
 
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
 
@@ -356,6 +380,9 @@ public class UpdateStatusActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
 
+                            Cursor cur = CommonUtil.dbUtil.getPart(jobid);
+                            Log.e("Before add",""+cur.getCount());
+
                             rel_One.setVisibility(GONE);
                             rel_Two.setVisibility(View.VISIBLE);
 
@@ -372,7 +399,12 @@ public class UpdateStatusActivity extends AppCompatActivity {
                         }
                     });
                 }else{
+                    CommonUtil.dbUtil.reportdelete(jobid);
+                    Cursor cur = CommonUtil.dbUtil.getPart(jobid);
+                    Log.e("After NO",""+cur.getCount());
+                    txt_Partname.setText("Please Add Part Replacement Items");
                     btn_Add.setVisibility(GONE);
+                    txt_Partname.setVisibility(GONE);
                 }
 
               //  selectedId = radioGroup.getCheckedRadioButtonId();
@@ -381,10 +413,47 @@ public class UpdateStatusActivity extends AppCompatActivity {
             }
         });
 
+        edt_Search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                String Search = edt_Search.getText().toString();
+
+                if(Search.equals("")){
+                    recyclerView.setVisibility(View.VISIBLE);
+                    imgClearsearch.setVisibility(View.INVISIBLE);
+                } else {
+
+                    filter(Search);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                String Search = edt_Search.getText().toString();
+
+                recyclerView.setVisibility(View.VISIBLE);
+                txt_NoRecords.setVisibility(GONE);
+
+                filter(Search);
+            }
+        });
+
+
 
         btn_Ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                edt_Search.setText("");
+                recyclerView.setVisibility(GONE);
+                Cursor cur = CommonUtil.dbUtil.getPart(jobid);
+                Log.e("After Select",""+cur.getCount());
                 rel_Two.setVisibility(GONE);
                 rel_One.setVisibility(View.VISIBLE);
                 getPartdata();
@@ -540,7 +609,42 @@ public class UpdateStatusActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void filter(String search) {
+
+        List<GetPartListResponse.Datum> filterlist = new ArrayList<>();
+
+        try {
+            for (GetPartListResponse.Datum item : databeanlist) {
+                if (item.getPart_name().toLowerCase().contains(search.toLowerCase())) {
+                    Log.w(TAG, "filter----" + item.getPart_name().toLowerCase().contains(search.toLowerCase()));
+                    filterlist.add(item);
+
+                }
+            }
+        }catch (NullPointerException e){
+            e.printStackTrace();
+            Log.e("Hi ",""+e.toString());
+        }
+
+
+        if(filterlist.isEmpty()) {
+            //Toast.makeText(this,"No Data Found ... ",Toast.LENGTH_SHORT).show();
+            recyclerView.setVisibility(View.GONE);
+            txt_NoRecords.setVisibility(View.VISIBLE);
+            txt_NoRecords.setText("No Data Found");
+        }else
+        {
+            partReplacement_Adapter.filterrList(filterlist);
+        }
+
+    }
     private void getPartListCall() {
+
+        progressDialog = new ProgressDialog(UpdateStatusActivity.this);
+        progressDialog.setMessage("Please Wait..");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
 
         APIInterface apiInterface = RetrofitClient.getClient().create(APIInterface.class);
         Call<GetPartListResponse> call = apiInterface.PartListCall(RestUtils.getContentType(), partlistRequest());
@@ -550,6 +654,8 @@ public class UpdateStatusActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<GetPartListResponse> call, Response<GetPartListResponse> response) {
                 Log.e(TAG, "Get Part List Response" + new Gson().toJson(response.body()));
+
+                progressDialog.dismiss();
 
                 if (response.body() != null){
 
@@ -566,17 +672,20 @@ public class UpdateStatusActivity extends AppCompatActivity {
                                 txt_NoRecords.setText("No Records Found");
 
                             }
+                            recyclerView.setVisibility(View.VISIBLE);
 
                             setView(databeanlist);
                             Log.d("dataaaaa", String.valueOf(databeanlist));
 
                         } else if (400 == response.body().getCode()) {
+                            progressDialog.dismiss();
                             if (response.body().getMessage() != null && response.body().getMessage().equalsIgnoreCase("There is already a user registered with this email id. Please add new email id")) {
                                 recyclerView.setVisibility(GONE);
                                 txt_NoRecords.setVisibility(View.VISIBLE);
                                 txt_NoRecords.setText("Error 404 Found..!");
                             }
                         }else {
+                            progressDialog.dismiss();
                             recyclerView.setVisibility(GONE);
                             txt_NoRecords.setVisibility(View.VISIBLE);
                             txt_NoRecords.setText("Error 404 Found..!");
@@ -588,6 +697,7 @@ public class UpdateStatusActivity extends AppCompatActivity {
                 }
                 else{
 
+                    progressDialog.dismiss();
                     recyclerView.setVisibility(GONE);
                     txt_NoRecords.setVisibility(View.VISIBLE);
                     txt_NoRecords.setText("Something went wrong..! Try agin");
@@ -598,6 +708,7 @@ public class UpdateStatusActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<GetPartListResponse> call, Throwable t) {
+                progressDialog.dismiss();
                 Log.e("Jobno Find ", "--->" + t.getMessage());
                 Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                 recyclerView.setVisibility(GONE);
@@ -1178,6 +1289,8 @@ public class UpdateStatusActivity extends AppCompatActivity {
 
                     if (200 == response.body().getCode()) {
 
+                        CommonUtil.dbUtil.reportdelete(jobid);
+
                         startActivity(new Intent(getApplicationContext(),JohnshonLoginDashboardActivity.class));
 
                     }
@@ -1218,28 +1331,45 @@ public class UpdateStatusActivity extends AppCompatActivity {
         updateIsuesStatusRequest.setUser_id(empid);
         updateIsuesStatusRequest.setPart_no_req(TextMaterial);
 
-        if (ticketStatus.equals("Inprogress") && StatusName.equals("Completed")){
+        if (TextMaterial.equals("Yes")){
+
+            if (ticketStatus.equals("Inprogress") && StatusName.equals("Completed")){
+
+                List<UpdateIsuesStatusRequest.partDetails> part_details = new ArrayList<>();
+
+                for(int j =0; j <arli_Partname.size(); j++){
+
+                    UpdateIsuesStatusRequest.partDetails myfield = new UpdateIsuesStatusRequest.partDetails();
+
+                    myfield.setPart_name(arli_Partname.get(j));
+                    myfield.setPart_no(arli_Partno.get(j));
+                    myfield.setPart_type(arli_Parttype.get(j));
+
+                    part_details.add(myfield);
+
+                }
+
+                Log.e("Nish",""+ part_details.size());
+                Log.e(TAG," Update Issue"+ new Gson().toJson(part_details));
+
+                updateIsuesStatusRequest.setPart_det(part_details);
+            }
+        }
+        else{
 
             List<UpdateIsuesStatusRequest.partDetails> part_details = new ArrayList<>();
 
-            for(int j =0; j <arli_Partname.size(); j++){
-
                 UpdateIsuesStatusRequest.partDetails myfield = new UpdateIsuesStatusRequest.partDetails();
 
-                myfield.setPart_name(arli_Partname.get(j));
-                myfield.setPart_no(arli_Partno.get(j));
-                myfield.setPart_type(arli_Parttype.get(j));
-
+                myfield.setPart_name("-");
+                myfield.setPart_no("-");
+                myfield.setPart_type("-");
                 part_details.add(myfield);
 
-            }
-
-            Log.e("Nish",""+ part_details.size());
             Log.e(TAG," Update Issue"+ new Gson().toJson(part_details));
 
             updateIsuesStatusRequest.setPart_det(part_details);
         }
-
 
         Log.w(TAG,"updateIsuesStatusRequest "+ new Gson().toJson(updateIsuesStatusRequest));
         return updateIsuesStatusRequest;

@@ -89,7 +89,7 @@ public class PartReplacement_Adapter extends RecyclerView.Adapter<RecyclerView.V
                 if (CommonUtil.dbUtil.hasPart(jobid,str_Partid)){
                     Log.e("Nish","inside");
                     Log.e("Hi Nish","Had Data");
-                    CommonUtil.dbUtil.deleteFeedbackDesc(jobid,str_Partid);
+                    CommonUtil.dbUtil.deletePart(jobid,str_Partid);
                     Cursor cur = CommonUtil.dbUtil.getPart(jobid);
                     Log.e("COunt",""+cur.getCount());
                 }else{
@@ -106,6 +106,13 @@ public class PartReplacement_Adapter extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public int getItemCount() {
         return breedTypedataBeanList.size();
+    }
+
+    public void filterrList(List<GetPartListResponse.Datum> filterlist) {
+
+
+        breedTypedataBeanList = filterlist;
+        notifyDataSetChanged();
     }
 
     private class ViewHolderOne extends RecyclerView.ViewHolder {

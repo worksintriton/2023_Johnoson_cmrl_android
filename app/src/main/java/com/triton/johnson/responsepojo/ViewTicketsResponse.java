@@ -97,11 +97,14 @@ public class ViewTicketsResponse  {
         private String updatedAt;
         private String createdAt;
         private int __v;
+        private String part_no_req;
         /**
          * image_path : /uploads/1628851697801.jpg
          */
 
         private List<TicketPhotoBean> ticket_photo;
+
+        private List<PartDet> part_det;
 
         public String get_id() {
             return _id;
@@ -189,6 +192,22 @@ public class ViewTicketsResponse  {
 
         public void setTicket_photo(List<TicketPhotoBean> ticket_photo) {
             this.ticket_photo = ticket_photo;
+        }
+
+        public List<PartDet> getPart_det() {
+            return part_det;
+        }
+
+        public void setPart_det(List<PartDet> part_det) {
+            this.part_det = part_det;
+        }
+
+        public String getPart_no_req() {
+            return part_no_req;
+        }
+
+        public void setPart_no_req(String part_no_req) {
+            this.part_no_req = part_no_req;
         }
 
         public static class UserIdBean {
@@ -374,6 +393,37 @@ public class ViewTicketsResponse  {
 
             public void setImage_path(String image_path) {
                 this.image_path = image_path;
+            }
+        }
+
+        public static class PartDet {
+
+            private  String part_name;
+            private  String part_no;
+            private  String part_type;
+
+            public String getPart_name() {
+                return part_name;
+            }
+
+            public void setPart_name(String part_name) {
+                this.part_name = part_name;
+            }
+
+            public String getPart_no() {
+                return part_no;
+            }
+
+            public void setPart_no(String part_no) {
+                this.part_no = part_no;
+            }
+
+            public String getPart_type() {
+                return part_type;
+            }
+
+            public void setPart_type(String part_type) {
+                this.part_type = part_type;
             }
         }
     }

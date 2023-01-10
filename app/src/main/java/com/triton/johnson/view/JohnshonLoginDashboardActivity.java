@@ -48,7 +48,7 @@ public class JohnshonLoginDashboardActivity extends AppCompatActivity {
     private Fragment fragment;
     private Class fragmentClass;
     public static String type;
-    public static String tabSelects;
+    public static String tabSelects="";
     private FragmentTransaction transaction;
     private Dialog dialog;
     private String userid;

@@ -1,7 +1,10 @@
 
 package com.triton.johnson.fcm;
 
+import static android.content.Intent.getIntent;
+
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -38,7 +41,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private String usertype;
     private String appintments;
     private String orders;
-    Intent intent;
+    Intent intent = getIntent();
 
     /**
      * Called when message is received.
@@ -290,26 +293,39 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         }
 
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        try{
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        }catch (NullPointerException e){
+            e.printStackTrace();
+            Log.e("Hi ",""+e.toString());
+        }
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "1")
-                .setSmallIcon(R.drawable.app_logo)
-                .setContentTitle(title)
-                .setContentText(messageBody)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setContentIntent(pendingIntent)// Set the intent that will fire when the user taps the notification
-                .setAutoCancel(true);
+        try{
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "1")
+                    .setSmallIcon(R.drawable.app_logo)
+                    .setContentTitle(title)
+                    .setContentText(messageBody)
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setContentIntent(pendingIntent)// Set the intent that will fire when the user taps the notification
+                    .setAutoCancel(true);
 
-        // notificationId is a unique int for each notification that you must define
-        notificationManager.notify(1, mBuilder.build());
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
-        createNotificationChannel();
+            // notificationId is a unique int for each notification that you must define
+            notificationManager.notify(1, mBuilder.build());
+
+            createNotificationChannel();
+        }catch (NullPointerException e){
+            e.printStackTrace();
+            Log.e("Hi ",""+e.toString());
+        }
+
 
     }
+
 
     private void createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
@@ -324,5 +340,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
+    }
+
+    public Intent getIntent() {
+        return intent;
+    }
+
+    public void setIntent(Intent intent) {
+        this.intent = intent;
     }
 }

@@ -16,25 +16,15 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.triton.johnson.arraylist.DeapartmentStatusList;
 import com.triton.johnson.R;
 import com.triton.johnson.api.ApiCall;
 import com.triton.johnson.responsepojo.ViewTicketsResponse;
-import com.triton.johnson.view.DepartmentStatusDetail;
-import com.triton.johnson.view.DepartmentStatusListClass;
-import com.triton.johnson.view.IssuseEditList;
-import com.triton.johnson.view.StationEditLayout;
 import com.triton.johnson.view.ViewTicketDetailsActivity;
 import com.triton.johnson.view.ViewTickets;
 
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by Iddinesh.
@@ -43,6 +33,9 @@ import java.util.Locale;
 public class TicketViewAdapter extends RecyclerView.Adapter<TicketViewAdapter.MyViewHolder> {
 
     List<ViewTicketsResponse.DataBean> ticketList;
+    List<ViewTicketsResponse.DataBean.PartDet> partDetails;
+
+    ViewTicketsResponse.DataBean.PartDet partDet;
 
     private FragmentActivity context;
 
@@ -53,10 +46,9 @@ public class TicketViewAdapter extends RecyclerView.Adapter<TicketViewAdapter.My
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView txt_status, txt_ticketid, txt_empname, txt_empid, txt_dateofcreate,txt_comments;
+        TextView txt_status, txt_ticketid, txt_empname, txt_empid, txt_dateofcreate,txt_comments,txt_Partname;
         CardView cv_viewtickets;
-
-
+        LinearLayout ll_Partname;
         ImageView circularImageView;
         ImageView img_tickets;
         public MyViewHolder(View view) {
@@ -69,16 +61,18 @@ public class TicketViewAdapter extends RecyclerView.Adapter<TicketViewAdapter.My
             txt_dateofcreate =  view.findViewById(R.id.txt_dateofcreate);
             txt_comments =  view.findViewById(R.id.txt_comments);
             cv_viewtickets =  view.findViewById(R.id.cv_viewtickets);
-
+            txt_Partname = view.findViewById(R.id.txt_partname);
+            ll_Partname = view.findViewById(R.id.ll_partname);
 
         }
     }
 
 
-    public TicketViewAdapter(FragmentActivity context, List<ViewTicketsResponse.DataBean> ticketList , String title) {
+    public TicketViewAdapter(FragmentActivity context, List<ViewTicketsResponse.DataBean> ticketList, String title, List<ViewTicketsResponse.DataBean.PartDet> partDet) {
         this.ticketList = ticketList;
         this.context = context;
         this.title = title;
+        this.partDetails = partDet;
     }
 
     @NonNull
@@ -93,9 +87,9 @@ public class TicketViewAdapter extends RecyclerView.Adapter<TicketViewAdapter.My
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NonNull TicketViewAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull TicketViewAdapter.MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
         final ViewTicketsResponse.DataBean dataBean = ticketList.get(position);
-        Log.w(TAG,"empid : "+dataBean.getUser_id().getEmployee_id());
+       // Log.w(TAG,"empid : "+dataBean.getUser_id().getEmployee_id());
 
         holder.txt_status.setText(dataBean.getTicket_status());
         holder.txt_ticketid.setText(dataBean.getTicket_no());
@@ -104,12 +98,76 @@ public class TicketViewAdapter extends RecyclerView.Adapter<TicketViewAdapter.My
         holder.txt_dateofcreate.setText(dataBean.getDate_of_create());
         holder.txt_comments.setText(dataBean.getTicket_comments());
 
+
+        if(dataBean.getTicket_status().equals("Completed")){
+
+            holder.ll_Partname.setVisibility(View.VISIBLE);
+
+            Log.e("Nish",""+dataBean.getPart_no_req());
+
+            holder.txt_Partname.setText(dataBean.getPart_no_req());
+
+        }
+
+//        if(dataBean.getPart_det().size() >0){
+//
+//            holder.ll_Partname.setVisibility(View.VISIBLE);
+//
+//            for (int i = 0; i< dataBean.getPart_det().size();i++) {
+//
+//                Log.e("Nish",""+dataBean.getPart_det().get(i).getPart_name());
+//
+//                holder.txt_Partname.setText(dataBean.getPart_det().get(0).getPart_name());
+//            }
+//
+//        }
+
+
+       // Log.e("Nish",""+dataBean.getPart_det().get(0).getPart_name());
+       // Log.e("Nish",""+dataBean.getPart_det().);
+
+//        if(dataBean.getTicket_status().equals("Completed")){
+//            Log.e("Nish",""+dataBean.getPart_det().get(position).getPart_name());
+//            holder.txt_Partname.setText(dataBean.getPart_det().get(position).getPart_name());
+//
+//        }
+
+    //    Log.e("Nish",""+dataBean.getPart_det().size());
+      //  Log.e("Nish 1",""+partDetails.size());
+
+//        if(dataBean.getPart_det().size() >0){
+//
+//            holder.ll_Partname.setVisibility(View.VISIBLE);
+//
+//             for (int i = 0; i< dataBean.getPart_det().size();i++){
+//
+//                 Log.e("Nish",""+dataBean.getPart_det().get(i).getPart_name());
+////                 String partname = dataBean.getPart_det().get(i).getPart_name();
+////                 Log.e("Nish 1",""+partname);
+////                 ArrayList<String> arlipartname = new ArrayList<>();
+////                 arlipartname.add(dataBean.getPart_det().get(i).getPart_name());
+////                 Log.e("Nish 2",""+arlipartname);
+//                 holder.txt_Partname.setText(dataBean.getPart_det().get(i).getPart_name());
+//
+//             }
+//        }
+
+        //      String imageURL = ApiCall.API_URL+ticketphotolist.get(position).getImage_path();
+       // ticketList = response.body().getData().get(position).getTicket_photo();
+
+
+
         if (dataBean.getTicket_photo() != null && dataBean.getTicket_photo().size()>0) {
             Glide.with(context)
                     .load(ApiCall.API_URL+dataBean.getTicket_photo().get(0).getImage_path())
                     .into(holder.img_tickets);
 
         }
+
+
+
+
+
 
         holder.cv_viewtickets.setOnClickListener(new View.OnClickListener() {
             @Override

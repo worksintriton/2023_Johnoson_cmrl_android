@@ -94,15 +94,16 @@ public class ViewTickets extends AppCompatActivity implements SwipeRefreshLayout
 
     TicketViewAdapter ticketViewAdapter;
     private List<ViewTicketsResponse.DataBean> ticketList = new ArrayList<>();
+    List<ViewTicketsResponse.DataBean.PartDet> partDet = new ArrayList<>();
     private LinearLayoutManager mLayoutManager;
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
        // setContentView(R.layout.department_status_list);
         setContentView(R.layout.activity_view_tickets);
-        Log.w(TAG," onCreate---->");
+        Log.w(TAG," onCreate----> View Tickets");
 
         sessionManager = new SessionManager(ViewTickets.this);
         HashMap<String, String> hashMap = sessionManager.getUserDetails();
@@ -305,13 +306,14 @@ public class ViewTickets extends AppCompatActivity implements SwipeRefreshLayout
                         ticketList.clear();
                         if(response.body().getData() != null && response.body().getData().size()>0){
                             ticketList = response.body().getData();
+//                            partDet = response.body().getData();
                         }
 
                         if (ticketList != null && ticketList.size()>0) {
                             recyclerView.setVisibility(View.VISIBLE);
                             emptyImageView.setVisibility(View.GONE);
                             retryButton.setVisibility(View.GONE);
-                            ticketViewAdapter = new TicketViewAdapter(ViewTickets.this, ticketList,"");
+                            ticketViewAdapter = new TicketViewAdapter(ViewTickets.this, ticketList,"",partDet);
 
 
                             mLayoutManager = new LinearLayoutManager(getApplicationContext());

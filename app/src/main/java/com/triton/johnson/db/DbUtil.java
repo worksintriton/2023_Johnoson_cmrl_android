@@ -54,8 +54,8 @@ public class DbUtil {
 
     }
 
-    public Cursor getPart(String str_partid) {
-        return db.query(DbHelper.PART_TABLE,PART_FIELD,DbHelper.JOBID + "= '" + str_partid + "'",
+    public Cursor getPart(String jobid) {
+        return db.query(DbHelper.PART_TABLE,PART_FIELD,DbHelper.JOBID + "= '" + jobid + "'",
                 null,null,null,null);
     }
 
@@ -71,8 +71,22 @@ public class DbUtil {
         return  true;
     }
 
-    public int deleteFeedbackDesc(String jobid, String str_partid) {
+    public int deletePart(String jobid, String str_partid) {
         return db.delete(DbHelper.PART_TABLE,DbHelper.JOBID + "= '" + jobid + "'"
                 + "AND " + DbHelper._ID + "= '" + str_partid + "'",null) ;
+    }
+
+    public void reportdelete(String job_id) {
+        db.delete(DbHelper.PART_TABLE, DbHelper.JOBID + "= '" + job_id + "'", null);
+
+    }
+
+    public void deleteparttable() {
+        db.delete(DbHelper.PART_TABLE, null, null);
+    }
+
+    public Cursor getPartall() {
+        return db.query(DbHelper.PART_TABLE,PART_FIELD,null,
+                null,null,null,null);
     }
 }

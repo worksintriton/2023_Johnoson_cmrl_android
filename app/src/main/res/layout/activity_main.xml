@@ -59,6 +59,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/logo_layout"
+                android:layout_centerInParent="true"
                 android:layout_marginTop="30dp">
 
                 <LinearLayout
@@ -162,7 +163,7 @@
             android:fontFamily="@font/sourcesanspro_regular"
             android:padding="15dp"
             android:layout_alignParentBottom="true"
-            android:text="Test Version - 11/11/2022-06.30"
+            android:text="Test Version - 21/11/2022-01.15"
             android:textAlignment="center"
             android:textColor="@color/colorPrimary"
             android:textSize="18sp"

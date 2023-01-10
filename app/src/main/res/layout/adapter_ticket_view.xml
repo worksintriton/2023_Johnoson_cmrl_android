@@ -242,12 +242,8 @@
 
                 </LinearLayout>
 
-
-
-
-
-
             </RelativeLayout>
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -289,6 +285,51 @@
                     android:textSize="12sp"
                     android:textStyle="normal"/>
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_partname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal"
+                android:layout_marginBottom="10dp"
+                android:layout_marginStart="5dp"
+                android:visibility="gone"
+                android:layout_marginEnd="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/sourcesanspro_regular"
+                    android:maxLines="1"
+                    android:text="Part Name"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/colon1"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:layout_marginStart="5dp"/>
+
+                <TextView
+                    android:id="@+id/txt_partname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/sourcesanspro_regular"
+                    android:maxLines="5"
+                    android:text="Part Name"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:textStyle="normal"/>
+            </LinearLayout>
+
         </LinearLayout>
 
 

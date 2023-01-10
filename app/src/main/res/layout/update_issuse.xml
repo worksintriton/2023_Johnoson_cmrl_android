@@ -93,6 +93,7 @@
 
     <RelativeLayout
         android:id="@+id/rel_one"
+        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -376,28 +377,80 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ScrollView
+        <RelativeLayout
+            android:id="@+id/rel_search"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/main_bar">
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/search_background"
+            android:padding="10dp">
 
-            <LinearLayout
+            <ImageView
+                android:id="@+id/img_search"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentEnd="false"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:contentDescription="image"
+                android:src="@drawable/ic_loctn_search" />
+
+
+            <EditText
+                android:id="@+id/edt_search"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_toEndOf="@id/img_search"
+                android:background="@null"
+                android:fontFamily="@font/sourcesanspro_regular"
+                android:hint="Search"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/colorPrimary"
+                android:textColorHint="@color/gray_btn_bg_pressed_color"
+                android:textCursorDrawable="@null"
+                android:textSize="16sp"
+                tools:ignore="Autofill,LabelFor,TextFields" />
+            <ImageView
+                android:id="@+id/img_clearsearch"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:contentDescription="image"
+                android:src="@drawable/ic_delete"
+                android:visibility="gone"/>
+
+        </RelativeLayout>
+
+
+            <LinearLayout
+                android:id="@+id/line_re"
+                android:layout_below="@+id/rel_search"
+                android:layout_above="@id/btn_ok"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginRight="10dp"
                 android:orientation="vertical">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_view"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:scrollbars="vertical" />
 
             </LinearLayout>
-        </ScrollView>
 
         <TextView
             android:id="@+id/txt_no_records"
@@ -417,7 +470,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_margin="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
             android:background="@drawable/edit_background_with_border"
             android:backgroundTint="@color/colorPrimary"
             android:text="Select"
